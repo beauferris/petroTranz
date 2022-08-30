@@ -1,82 +1,112 @@
 
 import './App.css';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import Organizer from './Components/Organizer';
 import Judge from './Components/Judge';
 import Spectator from './Components/Spectator';
-
+import Player from './Components/Player';
 
 function App() {
 
   let url = 'https://petrotranzdata.azurewebsites.net/api/matches/get';
+
+  let [matches, setMatches] = useState([]);
+
+  let [playerChoice, setPlayerChoice] = useState("player");
+  let [computerChoice, setComputerChoice] = useState("computer");
+  let [winner, setWinner] = useState("");
+  let [loading, setLoading] = useState(true);
+
+  let [matchData, setmatchData] = useState(
+    {
+      rock: 0,
+      paper: 0,
+      scissor: 0,
+      tie: 0,
+      matchCount:0,
+    }
+  )
+
   
-  let [matches,setMatches] = useState([]);
+  let chooseState = (event) =>{
 
-  let matchDistribution= 
-  {
-    rock:0,
-    paper:0,
-    scissor:0,
-    tie:0,
-  };
+    let choices = ["rock","paper","scissor"];
+    let randomChoice = choices[Math.floor(Math.random()*choices.length)];
 
-  useEffect(()=>{
-   async function fetchData() {
-    let data = await fetch(url);
-    let myData = await data.json();
-    console.log(myData)
-    setMatches(myData.matches)
-   }
-   
-   fetchData();
-   
-  }, [url])
+    setPlayerChoice(event.target.value);
+    setComputerChoice(randomChoice);
+  
+    updateWins([{choice1: event.target.value, choice2: randomChoice}]);
+  }
 
-  const distributeWins = (data) =>{
-    matches.forEach(match=>{
-     
-      if(match.choice1 === 'rock'){
-        if(match.choice2 === 'paper'){
+  useEffect(() => {
+    (async function () {
+      let data = await fetch(url);
+      let myData = await data.json();
+      setMatches(myData.matches);
+      updateWins(myData.matches);
+      setWinner("");
+      setLoading(false);
+    })();
+  }, [url]);
+
+  const updateWins = (data) => {
+
+    let matchDistribution = { ...matchData }
+
+    data.forEach(match => {
+      matchDistribution['matchCount']++;
+
+      if (match.choice1 === 'rock') {
+        if (match.choice2 === 'paper') {
           matchDistribution['paper']++;
-        }else if(match.choice2 === 'rock'){
+          setWinner("paper");
+        } else if (match.choice2 === 'rock') {
           matchDistribution['tie']++;
+          setWinner("tie");
+          
         }
-        else{
+        else {
           matchDistribution['rock']++;
+          setWinner("rock");
         }
 
-      }else if(match.choice1 === 'paper'){
-        if(match.choice2 === 'rock'){
+      } else if (match.choice1 === 'paper') {
+        if (match.choice2 === 'rock') {
           matchDistribution['paper']++;
-        }else if(match.choice2 === 'paper'){
+          setWinner("paper");
+        } else if (match.choice2 === 'paper') {
           matchDistribution['tie']++;
-        }else {
+          setWinner("tie");
+        } else {
           matchDistribution['scissor']++;
+          setWinner("scissor");
         }
 
-      }else if(match.choice1 === 'scissor'){
-        if(match.choice2 === 'rock'){
+      } else if (match.choice1 === 'scissor') {
+        if (match.choice2 === 'rock') {
           matchDistribution['rock']++;
-        }else if(match.choice2 === 'scissor'){
+          setWinner("rock");
+        } else if (match.choice2 === 'scissor') {
           matchDistribution['tie']++;
-        }else{
+          setWinner("tie");
+        } else {
           matchDistribution['scissor']++;
+          setWinner("scissor");
         }
       }
     })
+
+    setmatchData(matchDistribution);
+    
   }
-
-  distributeWins()
-
-  console.log(matchDistribution)
-
-
 
   return (
     <div className="App">
-      <Organizer totalMatches={matches.length}/>
-      <Judge rock={matchDistribution.rock} paper={matchDistribution.paper} scissors={matchDistribution.scissor}/>
-      <Spectator rockPercent={matchDistribution.rock/matches.length} paperPercent={matchDistribution.paper/matches.length} scissorsPercent={matchDistribution.scissor/matches.length}/>
+      <Player loading={loading} winner={winner} onClick={(event)=>chooseState(event)} choice={playerChoice} computerChoice={computerChoice}/>
+      <Organizer loading={loading} totalMatches={matchData.matchCount} />
+      <Judge loading={loading} tie={matchData.tie} rock={matchData.rock} paper={matchData.paper} scissor={matchData.scissor} />
+      <Spectator loading={loading} tiePercent={matchData.tie/matchData.matchCount} rockPercent={matchData.rock / matchData.matchCount} paperPercent={matchData.paper / matchData.matchCount} scissorPercent={matchData.scissor / matchData.matchCount} />
     </div>
   );
 }

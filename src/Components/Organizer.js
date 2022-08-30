@@ -1,7 +1,7 @@
-const Organizer = ({totalMatches}) =>{
+const Organizer = ({totalMatches, loading}) =>{
     return(
         <div className="data">
-            <h2>Matches: {totalMatches} </h2>
+            <h1>Total Matches: {loading? "Loading...":totalMatches} </h1>
         </div>
     )
 }

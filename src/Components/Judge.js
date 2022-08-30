@@ -1,9 +1,13 @@
-const Judge = ({rock,paper,scissors}) =>{
+const Judge = ({rock,paper,scissor,tie, loading}) =>{
     return(
         <div className="data">
-            <h2>Rock: {rock}</h2>
-            <h2>Paper: {paper}</h2>
-            <h2>scissors: {scissors}</h2>
+        
+            <h1>Number of Wins</h1>
+            <h2>Rock: {loading? "Loading...":  rock}</h2>
+            <h2>Paper: {loading? "Loading...":paper}</h2>
+            <h2>Scissor: {loading? "Loading...":scissor}</h2>
+            <h2>Tie: {loading? "Loading...":tie}</h2> 
+          
         </div>
     )
 }

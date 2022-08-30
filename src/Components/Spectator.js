@@ -1,9 +1,11 @@
-const Spectator = ({rockPercent, paperPercent, scissorsPercent}) => {
+const Spectator = ({rockPercent, paperPercent, scissorPercent, tiePercent, loading}) => {
     return (
         <div className="data">
-            <h2>Rock: {rockPercent}%</h2>
-            <h2>Paper: {paperPercent}%</h2>
-            <h2>scissors: {scissorsPercent}%</h2>
+            <h1>Win Percentage</h1>
+            <h2>Rock: {loading? "Loading...": Math.round(rockPercent*100)}%</h2>
+            <h2>Paper: {loading? "Loading...": Math.round(paperPercent*100)}%</h2>
+            <h2>Scissor: {loading? "Loading...": Math.round(scissorPercent*100)}%</h2>
+            <h2>Tie: {loading? "Loading...": Math.round((tiePercent*100))}%</h2>
         </div>
     )
 }

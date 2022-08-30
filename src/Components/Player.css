@@ -1,0 +1,55 @@
+.player {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+}
+
+button {
+    border: 5px solid black;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 20px 0 20px 0;
+    cursor: pointer;
+}
+
+.board {
+    display: flex;
+    justify-content: center;
+
+}
+
+.choice {
+    display: flex;
+    border: 5px dotted black;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.winner {
+    border: 5px solid black;
+    animation: gelatine ease-in 0.9s infinite;
+}
+
+
+@keyframes gelatine {
+    from, to {
+        transform: scale(1, 1);
+    }
+
+    25% {
+        transform: scale(0.9, 1.1);
+    }
+
+    50% {
+        transform: scale(1.1, 0.9);
+    }
+
+    75% {
+        transform: scale(0.95, 1.05);
+    }
+}
